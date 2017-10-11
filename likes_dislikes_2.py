@@ -55,31 +55,31 @@ dislikes = np.array([[1 if x == 1 else 0 for x in row] for row in rawdata])
 
 
 
-def retrieve_matrixes( rawdata , likes):
+def retrieve_matrixes( rawdata , first, second):
 
-    cooccurrence_matrix = np.dot(likes.transpose(), likes)
+    cooccurrence = np.dot(first.transpose(), second)
     # In[4]:
-    np.fill_diagonal(cooccurrence_matrix, 0)
-    size = cooccurrence_matrix.shape[0]
-    sums = np.array([row.sum() for row in cooccurrence_matrix[:, 0:size]])
+    np.fill_diagonal(cooccurrence, 0)
+    size = cooccurrence.shape[0]
+    sums = np.array([row.sum() for row in cooccurrence[:, 0:size]])
     total = sums.sum()
 
     # In[8]:
     conc_mult = np.zeros((size, size))
     for i in range(0, size):
         for j in range(0, size):
-            a_b = cooccurrence_matrix[i, j].tolist()
+            a_b = cooccurrence[i, j].tolist()
             a_not_b = (sums[i] - a_b).tolist()
             b_not_a = (sums[j] - a_b).tolist()
             not_ab = (total - (a_b + sums[i] + sums[j])).tolist()
             conc_mult[i, j] = round(llr_root(a_b, a_not_b, b_not_a, not_ab), 2)
-    return cooccurrence_matrix, conc_mult
+    return cooccurrence, conc_mult
 
-def extract_matrixes(conc_mult, cooccurrence_matrix, likes):
-    return np.dot(conc_mult, likes.T).T
+def extract_matrixes(conc_mult, cooccurrence_matrix, ref):
+    return np.dot(conc_mult, ref.T).T
 
-cooccurrence_matrix, conc_mult = retrieve_matrixes(rawdata , likes)
-cooccurrence_matrix_d, conc_mult_d = retrieve_matrixes(rawdata , dislikes)
+cooccurrence_matrix, conc_mult = retrieve_matrixes(rawdata , likes, likes)
+cooccurrence_matrix_d, conc_mult_d = retrieve_matrixes(rawdata , likes, dislikes)
 
 A_liked= extract_matrixes(conc_mult, cooccurrence_matrix, likes)
 A_disliked = extract_matrixes(conc_mult_d, cooccurrence_matrix_d, dislikes)
@@ -92,6 +92,6 @@ print ( " ============ A_LIKED ========================")
 print(A_liked)
 print(" ============ A_DISLIKED ========================")
 print(A_disliked)
-print(" ============ A_LIKED - A_DISLIKED ========================")
-print(A_liked - A_disliked)
+print(" ============ A_LIKED + A_DISLIKED ========================")
+print(A_liked + A_disliked)
 
