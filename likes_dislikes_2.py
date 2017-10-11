@@ -26,11 +26,7 @@ def llr_2x2(k11, k12, k21, k22):
 
 def llr_root(k11, k12, k21, k22):
     '''Computes a score for a 2x2 contingency table, but then adds a sign according to whether k11 is larger (result is positive) or smaller (result is negative) than might be expected. The magnitude of the result can be roughly interpreted on a scale similar to standard deviations'''
-
-    k11 = random.random() / 100000 if k11 == 0 else k11
-    k12 = random.random() / 100000 if k11 == 0 else k12
-    k21 = random.random() / 100000 if k11 == 0 else k21
-    k22 = random.random() / 100000 if k11 == 0 else k22
+    k11, k12, k21, k22 = map(lambda x: random.random() / 100000 if x == 0 else x, [k11,k12,k21,22])
     row = k11 + k21
     total = (k11 + k12 + k21 + k22)
     sign = cmp(float(k11) / (k11 + k12), float(row) / total)
